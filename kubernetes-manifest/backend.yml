@@ -15,7 +15,6 @@ spec:
       containers:
         - name: server
           image: local/backend:latest
-          imagePullPolicy: Never
           ports:
             - containerPort: 50001
           readinessProbe:
@@ -26,11 +25,6 @@ spec:
             exec:
               command: ["/bin/grpc_health_probe", "-addr=:50001"]
             initialDelaySeconds: 10
-          env:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
           resources:
             requests:
               cpu: 100m

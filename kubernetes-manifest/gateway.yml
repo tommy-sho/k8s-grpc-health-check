@@ -15,7 +15,6 @@ spec:
       containers:
         - name: server
           image: local/gateway:latest
-          imagePullPolicy: Never
           ports:
             - containerPort: 50002
           readinessProbe:
@@ -29,10 +28,6 @@ spec:
           env:
             - name: BACKEND_PORT
               value: "backend:50001"
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
           resources:
             requests:
               cpu: 100m
