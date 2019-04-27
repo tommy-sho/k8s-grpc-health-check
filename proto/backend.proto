@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package proto;
+
+service BackendServer {
+    rpc Message(MessageRequest) returns (MessageResponse) {}
+}
+
+message MessageRequest {
+    string name = 1;
+}
+
+message MessageResponse {
+    string message = 1;
+}
