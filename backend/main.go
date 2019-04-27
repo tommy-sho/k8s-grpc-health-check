@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/tommy-sho/k8s-grpc-health-check/lib"
+
 	pb "github.com/tommy-sho/grpc-loadbalncing/backend/genproto"
 	"github.com/tommy-sho/grpc-loadbalncing/backend/server"
 	"google.golang.org/grpc"
@@ -21,6 +23,7 @@ func main() {
 
 	s := grpc.NewServer()
 	pb.RegisterBackendServerServer(s, g)
+	lib.RegisterHeathCheck(s)
 	if err != nil {
 		panic(fmt.Errorf("new grpc server err: %v", err))
 	}
