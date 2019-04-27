@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"os"
 
-	proto "github.com/tommy-sho/grpc-loadbalncing/client/genproto"
+	proto "github.com/tommy-sho/k8s-grpc-health-check/client/genproto"
 	"google.golang.org/grpc"
 )
 
