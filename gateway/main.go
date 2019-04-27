@@ -6,6 +6,8 @@ import (
 	"net"
 	"os"
 
+	"github.com/tommy-sho/k8s-grpc-health-check/lib"
+
 	proto "github.com/tommy-sho/k8s-grpc-health-check/gateway/genproto"
 	"github.com/tommy-sho/k8s-grpc-health-check/gateway/server"
 	"google.golang.org/grpc"
@@ -28,7 +30,7 @@ func main() {
 	s := grpc.NewServer()
 
 	proto.RegisterGreetingServerServer(s, g)
-	server.RegisterHeathCheck(s)
+	lib.RegisterHeathCheck(s)
 	reflection.Register(s)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%v", port))

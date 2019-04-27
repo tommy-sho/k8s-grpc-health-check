@@ -3,8 +3,9 @@ package server
 import (
 	"context"
 	"fmt"
-	proto "github.com/tommy-sho/k8s-grpc-health-check/gateway/genproto"
 	"os"
+
+	proto "github.com/tommy-sho/k8s-grpc-health-check/gateway/genproto"
 )
 
 type GatewayService struct {
@@ -19,6 +20,7 @@ func (g *GatewayService) Greeting(ctx context.Context, req *proto.GreetingReques
 	in := &proto.MessageRequest{
 		Name: req.Name,
 	}
+
 	r, err := g.backendClient.Message(ctx, in)
 	if err != nil {
 		return &proto.GreetingResponse{}, fmt.Errorf("gateway backendClinet error : %v ", err)
@@ -27,5 +29,6 @@ func (g *GatewayService) Greeting(ctx context.Context, req *proto.GreetingReques
 	res := &proto.GreetingResponse{
 		Message: fmt.Sprintf("%v, gateway IP: %v ", r.Message, os.Getenv("MY_POD_IP")),
 	}
+
 	return res, nil
 }
