@@ -3,9 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	proto "github.com/tommy-sho/k8s-grpc-health-check/gateway/genproto"
 	"net"
 	"os"
+
+	proto "github.com/tommy-sho/k8s-grpc-health-check/gateway/genproto"
 	"github.com/tommy-sho/k8s-grpc-health-check/gateway/server"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
