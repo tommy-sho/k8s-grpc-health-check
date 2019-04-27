@@ -3,11 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	proto "github.com/tommy-sho/k8s-grpc-health-check/gateway/genproto"
 	"net"
 	"os"
-
-	pb "github.com/tommy-sho/grpc-loadbalncing/gateway/genproto"
-	"github.com/tommy-sho/grpc-loadbalncing/gateway/server"
+	"github.com/tommy-sho/k8s-grpc-health-check/gateway/server"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -23,11 +22,12 @@ func main() {
 	if err != nil {
 		panic(fmt.Errorf("failed to connect with backend server error : %v ", err))
 	}
-	bClient := pb.NewBackendServerClient(bConn)
+	bClient := proto.NewBackendServerClient(bConn)
 	g := server.NewGatewaySerive(bClient)
 	s := grpc.NewServer()
 
-	pb.RegisterGreetingServerServer(s, g)
+	proto.RegisterGreetingServerServer(s, g)
+	server.RegisterHeathCheck(s)
 	reflection.Register(s)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%v", port))

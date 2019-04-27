@@ -3,9 +3,8 @@ package server
 import (
 	"context"
 	"fmt"
+	proto "github.com/tommy-sho/k8s-grpc-health-check/gateway/genproto"
 	"os"
-
-	proto "github.com/tommy-sho/grpc-loadbalncing/gateway/genproto"
 )
 
 type GatewayService struct {

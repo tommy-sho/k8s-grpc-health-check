@@ -1,7 +1,6 @@
 FROM golang:1.12-alpine as builder
 RUN apk add --no-cache ca-certificates git
-
-ENV PROJECT /github.com/tommy-sho/grpc-loadbalncing/gateway
+ENV PROJECT /github.com/tommy-sho/k8s-grpc-health-check/gateway
 WORKDIR /go/src/$PROJECT
 
 ENV GO111MODULE on
