@@ -18,6 +18,14 @@ spec:
           imagePullPolicy: Never
           ports:
             - containerPort: 50002
+          readinessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:50002"]
+            initialDelaySeconds: 5
+          livenessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:50002"]
+            initialDelaySeconds: 10
           env:
             - name: BACKEND_PORT
               value: "backend:50001"
@@ -44,5 +52,6 @@ spec:
   ports:
     - name: "grpc"
       protocol: "TCP"
-      port: 9090
+      port: 8080
+      nodePort: 31000
       targetPort: 50002
