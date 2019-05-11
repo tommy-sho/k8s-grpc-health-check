@@ -12,9 +12,30 @@ spec:
       labels:
         app: gateway
     spec:
+      volumes:
+        - name: envoy-config
+          configMap:
+            name: gateway-envoy
       containers:
+        - name: envoy
+          image: envoyproxy/envoy:latest
+          command:
+            - "/usr/local/bin/envoy"
+          args:
+            - "--config-path /etc/envoy/envoy.yaml"
+          resources:
+            limits:
+              memory: 512Mi
+          volumeMounts:
+            - name: envoy-config
+              mountPath: /etc/envoy
+          ports:
+            - containerPort: 8080
+              name: app
+            - containerPort: 8001
+              name: envoy-admin
         - name: server
-          image: local/gateway:latest
+          image: gcr.io/my-first-project-236315/grpc-test/gateway
           ports:
             - containerPort: 50002
           readinessProbe:
@@ -27,7 +48,11 @@ spec:
             initialDelaySeconds: 10
           env:
             - name: BACKEND_PORT
-              value: "backend:50001"
+              value: "localhost:50001"
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
           resources:
             requests:
               cpu: 100m
@@ -39,14 +64,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: gateway
+  name: gateway-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: gateway
   ports:
     - name: "grpc"
       protocol: "TCP"
-      port: 8080
+      port: 10000
       nodePort: 31000
-      targetPort: 50002
+      targetPort: 10000
