@@ -13,13 +13,10 @@ import (
 
 var (
 	gateway string
-	port    string
-	method  string
 )
 
 func init() {
 	flag.StringVar(&gateway, "gateway", "gateway:50000", "gateway port")
-	flag.StringVar(&method, "method", "Greeting", "method name")
 }
 
 func main() {

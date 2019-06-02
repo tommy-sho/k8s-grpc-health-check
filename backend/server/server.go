@@ -19,7 +19,6 @@ func NewBackendServer(userRepo BackendRepository) *BackendServer {
 
 func (b *BackendServer) Message(ctx context.Context, req *proto.MessageRequest) (*proto.MessageResponse, error) {
 	m, err := b.userRepo.GetMessageByName(req.Name)
-	fmt.Println(req.Name)
 	if err != nil {
 		return &proto.MessageResponse{}, fmt.Errorf("Greeting error : %v ", err)
 	}
