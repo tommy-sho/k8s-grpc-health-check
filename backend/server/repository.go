@@ -3,12 +3,6 @@ package server
 import (
 	"fmt"
 	"os"
-
-	"golang.org/x/xerrors"
-)
-
-var (
-	InvalidNameErr = xerrors.New("invalid name")
 )
 
 type BackendRepository interface {

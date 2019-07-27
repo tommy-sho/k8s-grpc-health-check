@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      volumes:
+        - name: envoy-config
+          configMap:
+            name: backend-envoy
+      containers:
+        - name: envoy
+          image: envoyproxy/envoy:latest
+          command:
+            - "/usr/local/bin/envoy"
+          args:
+            - "--config-path /etc/envoy/envoy.yaml"
+          resources:
+            limits:
+              memory: 256Mi
+          volumeMounts:
+            - name: envoy-config
+              mountPath: /etc/envoy
+          ports:
+            - containerPort: 10000
+              name: app
+            - containerPort: 8001
+              name: envoy-admin
+        - name: server
+          image: gcr.io/my-first-project-236315/grpc-test/backend
+          ports:
+            - containerPort: 50001
+          env:
+          - name: MY_POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          readinessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:50001"]
+            initialDelaySeconds: 5
+          livenessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:50001"]
+            initialDelaySeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  clusterIP: None
+  selector:
+    app: backend
+  ports:
+    - name: grpc
+      port: 10000
+      targetPort: 10000
+      protocol: TCP
