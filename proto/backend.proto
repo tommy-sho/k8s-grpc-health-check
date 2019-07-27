@@ -3,7 +3,7 @@ syntax = "proto3";
 package proto;
 
 service BackendServer {
-    rpc Message(MessageRequest) returns (MessageResponse) {}
+    rpc mv (MessageRequest) returns (MessageResponse) {}
 }
 
 message MessageRequest {
@@ -12,4 +12,5 @@ message MessageRequest {
 
 message MessageResponse {
     string message = 1;
+    int64 datetime = 2;
 }
