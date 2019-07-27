@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package proto;
+
+service GatewayServer {
+    rpc Greeting (GreetingRequest) returns (GreetingResponse) {}
+}
+
+message GreetingRequest {
+    string name = 1;
+}
+
+message GreetingResponse {
+    string message = 1;
+    int64 datetime = 2;
+}
