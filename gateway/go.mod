@@ -3,7 +3,7 @@ module github.com/tommy-sho/k8s-grpc-health-check/gateway
 go 1.12
 
 require (
-	github.com/golang/protobuf v1.3.1
-	golang.org/x/net v0.0.0-20190424112056-4829fb13d2c6
-	google.golang.org/grpc v1.20.1
+	github.com/tommy-sho/k8s-grpc-health-check v0.0.0-20190727075926-2442e715b95b
+	golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7
+	google.golang.org/grpc v1.22.1
 )
