@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: gateway
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: gateway
@@ -19,6 +19,7 @@ spec:
       containers:
         - name: envoy
           image: envoyproxy/envoy:latest
+          imagePullPolicy: IfNotPresent
           command:
             - "/usr/local/bin/envoy"
           args:
@@ -30,14 +31,22 @@ spec:
             - name: envoy-config
               mountPath: /etc/envoy
           ports:
-            - containerPort: 8080
+            - containerPort: 10000
               name: app
             - containerPort: 8001
               name: envoy-admin
         - name: server
-          image: gcr.io/my-first-project-236315/grpc-test/gateway
+          image: grpc-health/gateway
+          imagePullPolicy: Never
           ports:
             - containerPort: 50002
+          env:
+            - name: "BACKEND_PORT"
+              value: localhost:50001
+            - name: "MY_POD_IP"
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
           readinessProbe:
             exec:
               command: ["/bin/grpc_health_probe", "-addr=:50002"]
@@ -46,32 +55,25 @@ spec:
             exec:
               command: ["/bin/grpc_health_probe", "-addr=:50002"]
             initialDelaySeconds: 10
-          env:
-            - name: BACKEND_PORT
-              value: "localhost:50001"
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
           resources:
             requests:
               cpu: 100m
               memory: 64Mi
             limits:
-              cpu: 200m
-              memory: 128Mi
+              cpu: 100m
+              memory: 64Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: gateway-service
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: gateway
   ports:
-    - name: "grpc"
+    - name: "http-port"
       protocol: "TCP"
-      port: 10000
       nodePort: 31000
-      targetPort: 10000
+      targetPort: 50002
+      port: 10000

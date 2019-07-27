@@ -1,22 +1,22 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"flag"
 	"fmt"
-	"os"
 
-	proto "github.com/tommy-sho/k8s-grpc-health-check/client/genproto"
+	"github.com/tommy-sho/k8s-grpc-health-check/proto"
 	"google.golang.org/grpc"
 )
 
 var (
 	gateway string
+	name    string
 )
 
 func init() {
-	flag.StringVar(&gateway, "gateway", "gateway:50000", "gateway port")
+	flag.StringVar(&gateway, "gateway", "localhost:31000", "gateway address")
+	flag.StringVar(&name, "name", "", "input your name!")
 }
 
 func main() {
@@ -29,25 +29,12 @@ func main() {
 	if err != nil {
 		panic(fmt.Errorf("failed to connect with backend server error : %v ", err))
 	}
-	c := proto.NewGreetingServerClient(gConn)
-	s := bufio.NewScanner(os.Stdin)
+	c := proto.NewGatewayServerClient(gConn)
 
-	fmt.Print("> ")
-
-L:
-	for s.Scan() {
-		n := s.Text()
-		switch n {
-		case "exit":
-			break L
-		default:
-			r, err := c.Greeting(ctx, &proto.GreetingRequest{Name: n})
-			if err != nil {
-				fmt.Println("failed to call Gateway error : ", err)
-				break L
-			}
-			fmt.Println(r.Message)
-		}
-		fmt.Print("> ")
+	r, err := c.Greeting(ctx, &proto.GreetingRequest{Name: name})
+	if err != nil {
+		fmt.Println("failed to call Gateway error : ", err)
+		return
 	}
+	fmt.Println(r.Message)
 }
