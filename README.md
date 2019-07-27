@@ -14,13 +14,19 @@ The Liveness and readiness probes is what keep checking your application is avai
 
 ## Usage
 #### Check your cluster
-`$ kubectl get node`
+```
+$ kubectl get node
+```
 
 #### Build Image
-`$ make build`
+```
+$ make build
+```
 
 #### Deploy to cluster
-`$ make apply`
+```
+$ make apply
+```
 
 ### Test
 ```
